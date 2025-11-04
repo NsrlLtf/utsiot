@@ -1,45 +1,37 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IoT DHT22</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sistem IoT - Suhu & Kelembaban</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+    <header>
+        <h1>Sistem IoT</h1>
+        <h2>Suhu dan Kelembaban</h2>
+    </header>
 
-<div class="card">
-  <h1>Sistem IoT</h1>
-  <h2>Suhu dan Kelembaban</h2>
-  <div class="greeting">
-    <div>Selamat Datang</div>
-    <div class="date" id="date"></div>
-  </div>
+    <main>
+        <div id="info-container">
+            <p id="greeting"></p>
+        </div>
+        <div id="sensor-container">
+            <div class="sensor-box" id="suhu-box">
+                <p class="label">Suhu</p>
+                <p class="value" id="suhu-value">--°C</p>
+            </div>
+            <div class="sensor-box" id="kelembaban-box">
+                <p class="label">Kelembaban</p>
+                <p class="value" id="kelembaban-value">--%</p>
+            </div>
+        </div>
+    </main>
 
-  <div class="sensors">
-    <div class="box">
-      <div class="label">Suhu</div>
-      <div class="row">
-        <span class="value" id="suhu">--°C</span>
-        <span class="status" id="suhu-status">Suhu Normal</span>
-      </div>
-    </div>
+    <footer>
+        <p>© 2025 Z-Coboy</p>
+    </footer>
 
-    <div class="box">
-      <div class="label">Kelembaban</div>
-      <div class="row">
-        <span class="value" id="kelembaban">--%</span>
-        <span class="status" id="kelembaban-status">Kelembaban Normal</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    Status: <span id="conn" class="offline">Offline</span>
-  </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

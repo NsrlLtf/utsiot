@@ -1,45 +1,59 @@
-// Update Jam Indonesia
-function updateDate() {
-  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  const now = new Date();
-  const str = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  document.getElementById('date').textContent = str;
+const suhuValue = document.getElementById('suhu-value');
+const kelembabanValue = document.getElementById('kelembaban-value');
+const greeting = document.getElementById('greeting');
+
+const suhuData = [24.5, 26.8, 28.2, 30.1, 32.0, 29.5];
+const kelembabanData = [55, 60, 65, 70, 75, 80];
+
+function ambilDataSensor() {
+    const suhu = suhuData[Math.floor(Math.random() * suhuData.length)];
+    const kelembaban = kelembabanData[Math.floor(Math.random() * kelembabanData.length)];
+
+    suhuValue.textContent = suhu + "°C";
+    kelembabanValue.textContent = kelembaban + "%";
+
+    [suhuValue, kelembabanValue].forEach(el => {
+        el.parentElement.style.opacity = '0';
+        el.parentElement.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            el.parentElement.style.opacity = '1';
+            el.parentElement.style.transform = 'translateY(0)';
+        }, 100);
+    });
 }
-updateDate();
-setInterval(updateDate, 60000);
 
-// MQTT WebSocket
-const client = mqtt.connect('wss://broker.hivemq.com:8084/mqtt');
+function formatTanggal() {
+    const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-client.on('connect', () => {
-  document.getElementById('conn').textContent = 'Online';
-  document.getElementById('conn').className = 'online';
-  client.subscribe('iot/suhu');
-  client.subscribe('iot/kelembaban');
-});
+    const sekarang = new Date();
+    const namaHari = hari[sekarang.getDay()];
+    const tgl = sekarang.getDate();
+    const bln = bulan[sekarang.getMonth()];
+    const thn = sekarang.getFullYear();
 
-client.on('message', (topic, message) => {
-  const val = parseFloat(message.toString()).toFixed(1);
+    return `${namaHari}, ${tgl} ${bln} ${thn}`;
+}
 
-  if (topic === 'iot/suhu') {
-    document.getElementById('suhu').textContent = val + '°C';
-    const st = document.getElementById('suhu-status');
-    if (val > 30) { st.textContent = 'Suhu Tinggi'; st.className = 'status warning'; }
-    else if (val < 20) { st.textContent = 'Suhu Rendah'; st.className = 'status danger'; }
-    else { st.textContent = 'Suhu Normal'; st.className = 'status normal'; }
-  }
+function updateGreeting() {
+    const hour = new Date().getHours();
+    let salam = "";
 
-  if (topic === 'iot/kelembaban') {
-    document.getElementById('kelembaban').textContent = val + '%';
-    const st = document.getElementById('kelembaban-status');
-    if (val > 70) { st.textContent = 'Kelembaban Tinggi'; st.className = 'status warning'; }
-    else if (val < 40) { st.textContent = 'Kelembaban Rendah'; st.className = 'status danger'; }
-    else { st.textContent = 'Kelembaban Normal'; st.className = 'status normal'; }
-  }
-});
+    if (hour >= 5 && hour < 11) salam = "Selamat pagi!";
+    else if (hour >= 11 && hour < 15) salam = "Selamat siang!";
+    else if (hour >= 15 && hour < 18) salam = "Selamat sore!";
+    else salam = "Selamat malam";
 
-client.on('offline', () => {
-  document.getElementById('conn').textContent = 'Offline';
-  document.getElementById('conn').className = 'offline';
+    const tanggal = formatTanggal();
+    greeting.innerHTML = `${salam}<br><small>${tanggal}</small>`;
+}
+
+window.addEventListener('load', () => {
+    updateGreeting();
+    ambilDataSensor();
+
+    setInterval(updateGreeting, 60000);
+
+    setInterval(ambilDataSensor, 5000);
 });
